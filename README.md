@@ -1,40 +1,75 @@
-# Lumen
- Had issues finding dedicated study applications for pc so made one that has all the functions of YPT whilst living on yourpc, no need for an internet connection to log your study hours. Lumen combines a Pomodoro timer and a stopwatch, and keeps a record of your study time so you can see how much you've put in each month and across the year.
+# Jangal
 
-Built with [Electron](https://www.electronjs.org/).
+![Jangal's Focus page in the Zine theme](docs/screenshot.png)
+
+A desktop study timer for Windows that keeps you honest about how much you actually study. Everything is stored on your own laptop; there are no accounts and it works offline.
 
 ## Features
 
-- **Pomodoro timer** – work in focused intervals with breaks in between.
-- **Stopwatch** – track open-ended study sessions when a fixed interval doesn't fit.
-- **Monthly stats** – see how much you studied over the month.
-- **Yearly stats** – look back over your study time across the whole year.
+- **Focus timer**: Pomodoro or stopwatch, with a mini always-on-top timer.
+- **Subjects**: tag every session, set a weekly hour target per subject.
+- **Plan**: tasks with due dates, and exam countdowns that show on the Focus page.
+- **Boss battles**: every exam is a boss with an HP bar; studying its subject wears it down before the day.
+- **Insights**: calendar heatmap, daily and monthly charts, a year at a glance.
+- **Rewards**: XP, levels and 24 badges earned from real study time.
+- **Focus sounds**: rain, waves, deep hum or white noise while a session runs.
+- **Themes**: Zine (the default: holographic screen, paper cut-outs, scribbled rings and sticker bursts), Midnight, Ember, Forest, Paper, Sky and Shinigami (black paper, brush lettering).
+- **Final countdown**: a red ring and a heartbeat in the last 40 seconds of a focus session.
+- **Your data**: daily automatic backups, JSON backup/restore, CSV export.
 
-## Getting started
+## Download
 
-### Requirements
+Grab the Windows installer (or the portable `.exe`) from the [Releases](../../releases) page.
 
-- [Node.js](https://nodejs.org/) (includes npm)
+Jangal was called Lumen before version 2.3. If you used Lumen, Jangal picks up your study history, settings and backups automatically the first time it opens.
 
-### Install and run
+## Run it from source
+
+Requires [Node.js](https://nodejs.org/).
 
 ```bash
-git clone https://github.com/pk-left/lumen.git
-cd lumen
 npm install
 npm start
 ```
 
-## Project structure
+Build the Windows installer and portable app (output in `dist/`):
 
-```
-lumen/
-├── main.js        # Electron main process: creates the app window
-├── renderer/      # The app's interface (HTML, CSS, JavaScript)
-└── package.json   # Dependencies and scripts
+```bash
+npm run dist
 ```
 
-## Author
+## Shortcuts
 
-Built by **PK**
-GitHub: [@pk-left](https://github.com/pk-left)
+| Key | Action |
+| --- | --- |
+| Space | Start / pause |
+| S | Skip phase |
+| R | Stop and save |
+| M | Mini timer |
+| 1–6 | Switch page |
+
+## Where your data lives
+
+`%APPDATA%\Jangal\jangal-data.json`, with daily backups in `%APPDATA%\Jangal\backups` (the last 14 are kept).
+
+## Project layout
+
+```
+main.js            Electron main process: window, saving, backups, notifications
+preload.js         The small bridge between the window and the main process
+renderer/
+  index.html       Page structure
+  styles.css       All styling, including the six classic themes
+  zine/            The Zine theme: zine.css, zine.js (hand-drawn scribbles, theme wording) and holo.jpg
+  fonts/           Caveat Brush, Rampart One, Gochi Hand, Jacquard 12, Jersey 10 and Shantell Sans,
+                   all under the SIL Open Font License (licence files alongside)
+  app.js           Timer engine, stats, subjects, settings
+  plan.js          Tasks and exam countdowns
+  rewards.js       XP, levels and badges
+  ambient.js       Focus sounds (generated in the app, no audio files)
+  icons.js         Icon set
+```
+
+## License
+
+MIT

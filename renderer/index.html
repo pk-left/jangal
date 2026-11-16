@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:;" />
+  <title>Jangal</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="zine/zine.css" />
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand drag">
+        <div class="brand-mark"><span></span></div>
+        <div class="brand-name">Jangal</div>
+      </div>
+      <nav class="nav">
+        <button class="nav-item active" data-view="timer" title="Focus (1)"><i data-icon="timer"></i><span>Focus</span></button>
+        <button class="nav-item" data-view="plan" title="Plan (2)"><i data-icon="list"></i><span>Plan</span></button>
+        <button class="nav-item" data-view="stats" title="Insights (3)"><i data-icon="chart"></i><span>Insights</span></button>
+        <button class="nav-item" data-view="subjects" title="Subjects (4)"><i data-icon="book"></i><span>Subjects</span></button>
+        <button class="nav-item" data-view="rewards" title="Rewards (5)"><i data-icon="trophy"></i><span>Rewards</span></button>
+        <button class="nav-item" data-view="settings" title="Settings (6)"><i data-icon="settings"></i><span>Settings</span></button>
+      </nav>
+      <div class="sidebar-foot">
+        <button class="level-chip" id="levelChip"></button>
+        <div class="streak-card">
+          <i data-icon="flame"></i>
+          <div>
+            <div class="streak-num" id="sideStreak">0</div>
+            <div class="streak-label">day streak</div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="titlebar drag">
+        <h1 id="viewTitle">Focus</h1>
+        <div class="titlebar-sub" id="viewSub"></div>
+      </header>
+
+      <!-- FOCUS -->
+      <section class="view active" id="view-timer">
+        <div class="timer-layout">
+          <div class="timer-stage card">
+            <div class="ambient-wrap">
+              <button class="ambient-btn" id="btnAmbient" title="Focus sounds"></button>
+              <div class="popover hidden" id="ambientPop"></div>
+            </div>
+            <div class="segmented" id="modeSwitch" role="tablist">
+              <button data-mode="pomodoro" class="active">Pomodoro</button>
+              <button data-mode="stopwatch">Stopwatch</button>
+              <span class="seg-thumb"></span>
+            </div>
+
+            <div class="ring-wrap" id="ringWrap">
+              <svg class="ring" viewBox="0 0 320 320" aria-hidden="true">
+                <defs>
+                  <linearGradient id="ringGrad" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stop-color="var(--phase-a)" />
+                    <stop offset="100%" stop-color="var(--phase-b)" />
+                  </linearGradient>
+                </defs>
+                <circle class="ring-track" cx="160" cy="160" r="146" />
+                <g class="ring-ticks" id="ringTicks"></g>
+                <circle class="ring-progress" id="ringProgress" cx="160" cy="160" r="146" />
+              </svg>
+              <div class="ring-center">
+                <div class="phase-label" id="phaseLabel">Focus</div>
+                <div class="time" id="timeDisplay">25:00</div>
+                <button class="subject-pill" id="subjectPill" title="Change subject">
+                  <span class="dot"></span><span class="name">Pick a subject</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="cycle-dots" id="cycleDots"></div>
+
+            <div class="controls">
+              <button class="ctrl ghost" id="btnReset" title="Stop & save (R)"><i data-icon="stop"></i></button>
+              <button class="ctrl primary" id="btnStart" title="Start / pause (Space)"><i data-icon="play"></i></button>
+              <button class="ctrl ghost" id="btnSkip" title="Skip phase (S)"><i data-icon="skip"></i></button>
+            </div>
+
+            <div class="subject-row" id="subjectRow"></div>
+
+            <button class="mini-toggle" id="btnMini" title="Mini floating timer (M)"><i data-icon="pip"></i><span>Mini</span></button>
+          </div>
+
+          <div class="timer-side">
+            <div class="card today-card">
+              <div class="card-head">
+                <h3>Today</h3>
+                <span class="muted" id="todayDate"></span>
+              </div>
+              <div class="hero-num" id="todayTotal">0h 0m</div>
+              <div class="goal">
+                <div class="goal-bar"><div class="goal-fill" id="goalFill"></div></div>
+                <div class="goal-meta"><span id="goalPct">0%</span><span class="muted" id="goalText">of 4h goal</span></div>
+              </div>
+              <div class="today-subjects" id="todaySubjects"></div>
+            </div>
+
+            <div class="card up-next hidden" id="upNext"></div>
+
+            <div class="card">
+              <div class="card-head"><h3>Timeline</h3><span class="muted">today</span></div>
+              <div class="timeline" id="todayTimeline"></div>
+            </div>
+
+            <div class="card">
+              <div class="card-head"><h3>Last 7 days</h3><span class="muted" id="weekTotal"></span></div>
+              <div class="week-bars" id="weekBars"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PLAN -->
+      <section class="view" id="view-plan">
+        <div class="plan-grid" id="planBody"></div>
+      </section>
+
+      <!-- REWARDS -->
+      <section class="view" id="view-rewards">
+        <div id="rewardsBody"></div>
+      </section>
+
+      <!-- INSIGHTS -->
+      <section class="view" id="view-stats">
+        <div class="stats-toolbar">
+          <div class="month-nav">
+            <button class="icon-btn" id="prevMonth" title="Previous month"><i data-icon="chevL"></i></button>
+            <div class="month-label" id="monthLabel"></div>
+            <button class="icon-btn" id="nextMonth" title="Next month"><i data-icon="chevR"></i></button>
+          </div>
+          <button class="text-btn" id="thisMonth">This month</button>
+        </div>
+
+        <div class="kpis" id="kpis"></div>
+
+        <div class="stats-grid">
+          <div class="card calendar-card">
+            <div class="card-head">
+              <h3>Calendar</h3>
+              <div class="legend-ramp" id="calLegend"></div>
+            </div>
+            <div class="calendar" id="calendar"></div>
+          </div>
+
+          <div class="card subjects-card">
+            <div class="card-head"><h3>By subject</h3><span class="muted" id="subjMonthTotal"></span></div>
+            <div class="subject-bars" id="subjectBars"></div>
+          </div>
+
+          <div class="card span-2">
+            <div class="card-head">
+              <h3>Daily study time</h3>
+              <div class="head-actions">
+                <span class="legend-inline"><span class="swatch-line"></span>Daily goal</span>
+                <button class="text-btn small" id="toggleTable">Show table</button>
+              </div>
+            </div>
+            <div class="chart" id="dailyChart"></div>
+            <div class="table-wrap hidden" id="dailyTable"></div>
+          </div>
+
+          <div class="card span-2">
+            <div class="card-head">
+              <h3 id="yearTitle">Year</h3>
+              <span class="muted" id="yearTotal"></span>
+            </div>
+            <div class="year-heat" id="yearHeat"></div>
+            <div class="chart month-chart" id="monthChart"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SUBJECTS -->
+      <section class="view" id="view-subjects">
+        <div class="subjects-head">
+          <form class="add-subject card" id="addSubjectForm">
+            <input id="newSubjectName" maxlength="28" placeholder="New subject, e.g. Organic Chemistry" autocomplete="off" />
+            <div class="color-pick" id="newSubjectColors"></div>
+            <button class="btn primary" type="submit"><i data-icon="plus"></i>Add</button>
+          </form>
+        </div>
+        <div class="subject-list" id="subjectList"></div>
+      </section>
+
+      <!-- SETTINGS -->
+      <section class="view" id="view-settings">
+        <div class="settings-grid">
+          <div class="card">
+            <h3>Theme</h3>
+            <div class="theme-grid" id="themeGrid"></div>
+            <h3 class="mt">Focus sounds</h3>
+            <div class="setting"><label>Ambient sound<small>Plays while a focus session is running</small></label><div class="opt-chips" id="ambientChips"></div></div>
+            <div class="setting"><label>Ambient volume</label><input type="range" min="5" max="100" data-key="ambientVol" class="range" /></div>
+            <div class="setting"><label>Stopwatch break reminder<small>A nudge to rest when you study without breaks</small></label><div class="stepper" data-key="stretchEvery" data-min="0" data-max="120" data-step="10" data-unit="minOff"></div></div>
+          </div>
+          <div class="card">
+            <h3>Pomodoro</h3>
+            <div class="setting"><label>Focus length</label><div class="stepper" data-key="focus" data-min="5" data-max="180" data-step="5" data-unit="min"></div></div>
+            <div class="setting"><label>Short break</label><div class="stepper" data-key="short" data-min="1" data-max="60" data-step="1" data-unit="min"></div></div>
+            <div class="setting"><label>Long break</label><div class="stepper" data-key="long" data-min="5" data-max="90" data-step="5" data-unit="min"></div></div>
+            <div class="setting"><label>Long break every</label><div class="stepper" data-key="longEvery" data-min="2" data-max="10" data-step="1" data-unit="sessions"></div></div>
+            <div class="setting"><label>Auto-start breaks</label><label class="switch"><input type="checkbox" data-key="autoBreaks" /><span></span></label></div>
+            <div class="setting"><label>Auto-start focus</label><label class="switch"><input type="checkbox" data-key="autoFocus" /><span></span></label></div>
+          </div>
+          <div class="card">
+            <h3>Goals &amp; days</h3>
+            <div class="setting"><label>Daily goal</label><div class="stepper" data-key="goalMin" data-min="30" data-max="960" data-step="30" data-unit="goal"></div></div>
+            <div class="setting"><label>Day starts at<small>Late-night study counts toward the previous day</small></label><div class="stepper" data-key="dayStart" data-min="0" data-max="8" data-step="1" data-unit="hour"></div></div>
+            <h3 class="mt">Alerts</h3>
+            <div class="setting"><label>Sound</label><label class="switch"><input type="checkbox" data-key="sound" /><span></span></label></div>
+            <div class="setting"><label>Volume</label><input type="range" min="0" max="100" data-key="volume" class="range" /></div>
+            <div class="setting"><label>Desktop notifications</label><label class="switch"><input type="checkbox" data-key="notify" /><span></span></label></div>
+            <div class="setting"><label>Final countdown<small>Red ring and a heartbeat in the last 40 seconds of focus</small></label><label class="switch"><input type="checkbox" data-key="drama" /><span></span></label></div>
+            <div class="setting"><label>Test sound</label><button class="btn" id="testSound">Play</button></div>
+          </div>
+          <div class="card">
+            <h3>Your data</h3>
+            <p class="muted small">Everything is stored only on this laptop. A backup is made automatically each day.</p>
+            <div class="btn-col">
+              <button class="btn" id="exportJson"><i data-icon="download"></i>Export backup (.json)</button>
+              <button class="btn" id="exportCsv"><i data-icon="download"></i>Export sessions (.csv)</button>
+              <button class="btn" id="importJson"><i data-icon="upload"></i>Restore from backup</button>
+              <button class="btn danger" id="resetData"><i data-icon="trash"></i>Erase all data</button>
+            </div>
+            <h3 class="mt">Shortcuts</h3>
+            <div class="shortcuts">
+              <div><kbd>Space</kbd>Start / pause</div>
+              <div><kbd>S</kbd>Skip phase</div>
+              <div><kbd>R</kbd>Stop &amp; save</div>
+              <div><kbd>M</kbd>Mini timer</div>
+              <div><kbd>1</kbd>–<kbd>6</kbd>Switch page</div>
+            </div>
+            <p class="about">Jangal 2.3 · Your study data never leaves this laptop.</p>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- mini mode header -->
+  <div class="mini-bar drag"><span id="miniSubject"></span></div>
+  <button class="mini-exit" id="btnMiniExit" title="Back to full window (M)"><i data-icon="expand"></i></button>
+
+  <div class="tooltip" id="tooltip" role="tooltip"></div>
+  <div class="toast" id="toast"></div>
+
+  <div class="modal-backdrop hidden" id="modal">
+    <div class="modal card" id="modalBody"></div>
+  </div>
+
+  <script src="icons.js"></script>
+  <script src="ambient.js"></script>
+  <script src="rewards.js"></script>
+  <script src="plan.js"></script>
+  <script src="zine/zine.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
